@@ -1,0 +1,425 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title> Modelos</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Main -->
+        <div id="main">
+
+            <!-- Post -->
+                <section class="post">
+                    <header>
+                       <p><h1>Modelos de Clasificación</h1></p>
+                       <p></p>                    
+                    </header>
+
+                    <!-- Text stuff -->
+                        <h2>1. Separación de datos</h2>
+                            <p>Las variables preprocesadas con las que se trabajarán en los modelos de clasificación son  10, siendo estas las siguientes: </p> 
+
+                            <center><img src="images/Var.png" alt="" class="center"></center>
+
+                            <p></p>
+
+                            <p>Antes de aplicar los modelo de clasificación, hay que entrenarlos, y para eso, se separan los datos. Debemos, en primera instancia, definir como "Y" la variable dependiente (cliente  se  fuga  o  no), y el resto de las variables independientes como X. La variable Y obtendrá el valor 1 cuando sea FUGA_NF, (no se fuga), y 0 cuando sea NF, o sea, se fuga. </p>
+
+                            <center><img src="images/separacion.png" alt="" class="center"></center>
+
+                            <p></p>                        
+                            
+                        <h2>2. Entrenamiento y Validación</h2>
+
+                            <p></p>                      
+
+                        <h3>2.1 Regresión Logística</h3>
+
+                        <p>En primer lugar, definimos el modelo de regresión  logística  con nuestros X e Y de entrenamiento, para  luego  ajustar  nuestro  modelo  a  estos  datos  de  entrenamiento,  obteniendo  los siguientes resultados:</p>                               
+
+                        <center><img src="images/logit.png" alt="Categoricas" class="center"></center>
+
+                    <p>Podemos eliminar  'EstCivil_OTRO' porque es la que tiene el mayor P value mayor a 0,05 y por lo tanto no es significativa en el modelo. Hay que verificar P value, y la interpretación del Beta debe tener sentido. Si el P es significativo pero el Beta no tiene sentido, podría existir un error en la calibración.</p>                      
+                        
+                    <p>Definimos una nueva variable, sin la variable 'EstCivil_OTRO'. La entrenamos nuevamente en el modelo con nuestros nuevos X_train_reg y X_test_reg, obteniendo los siguientes resultados:</p> 
+                        
+                    <center><img src="images/logit2.png" alt="Categoricas" class="center"></center>
+
+                    <p>De igual manera, se observa que la variable 'EstCivil_SOL' también tiene el mayor Pvalue mayor a 0,05 y por lo tanto no es significativa en el modelo.  Así, concluimos entonces que la variable estado civil no es significativa en el modelo: </p> 
+                            
+                    <center><img src="images/logit3.png" alt="Categoricas" class="center"></center>
+
+                    <p>El  mismo  ejercicio  se  puede  realizar  con  la  variable  ‘Edad’  como  también  con 'NivelEduc_Incompleta', ya que, al eliminarlas  una por  una y, a pesar de las modificaciones, sus valores P nunca fueron significativos, por lo tanto, se pueden eliminar. Finalmente, las variables que se mantienen dentro del modelo son las que se muestran a continuación:</p>
+
+                    <center><img src="images/logit4.png" alt="Categoricas" class="center"></center>
+                              
+                    <p>Concluimos entonces que el nivel de educación tampoco incide en el modelo. Luego, se puede definir el modelo de regresión logística con las variables seleccionadas, para luego evaluar  sus  resultados  de  predicción.  Los  coeficientes  beta,  asociados  a  las  variables  son  los siguientes:</p>
+
+                    <center><img src="images/logit5.png" alt="Categoricas" class="center"></center>
+                        
+                     <p>A pesar de que vemos que existe una gran diferencia en el valor de los coeficientes, no se interpreta igual que la regresión lineal, porque esta es logística, luego lo que se debería considerar es el signo.</p>
+                            
+                            
+                    <h3>2.2 Árbol de decisión</h3>
+
+                        <p>En este método, discretizamos y tomamos diferentes umbrales para cada variable. Cada nodo es una variable de entrada. Este método calcula todas las ramificaciones posibles, y se queda con la mejor, según la <b>entropía</b>.</p>                             
+                            
+                        <p>Una vez ejecutado el modelo,  nos da un gran árbol, pues no se estableció ningún parámetro de poda y se entrenó directamente este modelo con los x e y de entrenamiento. Por eso, se le asigna una  profundidad máxima a nuestro modelo de clasificación para obtener un árbol más pequeño y fácil de interpretar, que se muestra a continuación: </p>                        
+                           
+                        <center><img src="images/arbol.png" alt="Categoricas" class="center"></center>
+                        
+                        <p>Para saber por dónde se ramifica, se ve la entropía. Esta es 0 cuando hay orden absoluto y 1 cuando hay desorden absoluto. A medida que se ramifica, la entropía cambia, debería ir disminuyendo. Esa diferencia de entropía es la ganancia de información. Cuanta entropía gano, o  lo que es lo mismo, cuanto orden gano, menor desorden posible. Orden equivale a la pureza del nodo.
+                        Este método calcula todas las ramificaciones posibles, y se queda con  la  que  presenta  la  mejor ramificación, según el criterio anterior. Así, ‘lncredit’ es la mejor variable para este modelo porque es la que divide el resto del árbol. Observamos también que la variable ‘Genero’ no es relevante ya que  no aparece en el árbol.</p>      
+                            
+                        <p>También podemos analizar cuales parámetros son mejores para nuestro árbol en base a los datos que utilizamos. Para esto, analizamos los siguientes parámetros con una grilla:</p>  
+                            
+                        <p><b>max_leaf_nodes:</b>Número máximo de división del nodo.</p>
+                        <p><b>min_samples_split:</b>Número mínimo de muestras para dividir un nodo.</p>
+                        <p><b>max_depth:</b>Profundidad máxima del árbol.</p>
+
+                        <p>Así, construimos la grilla y entrenamos los modelos con nuestros X e Y de entrenamiento. Los resultados nos muestra que los mejores parámetros para el árbol son: </p> 
+                            
+                        <p><b>max_leaf_nodes:</b>5.</p>
+                        <p><b>min_samples_split:</b>2.</p>
+                        <p><b>max_depth:</b>2.</p>
+
+                        <p>Observamos  que  nos  dio  una  profundidad  de  2,  después  de  eso  ya  no  hay  mucha  mejora.  Guardamos el mejor modelo de la grilla para luego obtener sus resultados de predicción. Luego, el nuevo árbol según los parámetros recomendados se muestra a continuación:</p>
+                        
+                        <center><img src="images/arbol2.png" alt="Categoricas" class="center"></center>
+                        
+                        
+                        <p>Vemos que el árbol es mucho más pequeño y los resultados muestran que básicamente existen solo dos  variables importantes para realizar la predicción: ‘LnCredit’ y ‘AvrTarj’. Este sería finalmente el árbol que me genera la mayor “ganancia” de entropía, o menor desorden posible.</p>
+                            
+                    <h3>2.3 Normalización</h3>
+
+                        <p>Los modelos anteriores analizados en su fase de  entrenamiento son modelos más transparentes, podemos  entrar  y  cambiar  los  parámetros  y  lográbamos  interpretar  de  forma  mas  clara  lo  que mostraba el modelo. En cambio, los modelos a continuación  son más sofisticados y a empiezan a sar lo que llamamos la caja negra, en donde se procesa la información sin saber mucho lo que esta pasando dentro. </p>
+
+                        <p>Además, en los siguientes modelos los pesos de las variables pueden valer lo mismo o no, luego podría provocar ruido. Acá no es fácil ver cual variable es irrelevante o no. Por eso que  se filtran los  atributos, o se ponderan  distancias.  Por eso se  necesita  normalizar, para igualar los pesos relativos de cada una de las variables.</p>
+                        
+                        <p>Se sugiere normalizar nuevamente la base de datos, para disminuir la escala y trabajarlos mejor. Los datos datos normalizados se muestran en la siguiente tabla:</p> 
+
+                        <center><img src="images/norm2.png" alt="Categoricas" class="center"></center>
+                         <p></p>   
+                               
+                        <h3>2.4 K-Vecinos mas cercanos</h3>
+
+                        <p>Este modelo etiqueta los vecinos mas cercano identificando diferentes grupos de clientes a partir de hyperplanos, de tal forma que los clientes mas cercanos se comportan de manera similar, definiendo y predijendo las clases, en este caso fuga o no fuga. Esta similitud se calcula a partir de una distancia euclidiana. Luego, cuando un cliente nuevo ingresa a nuestro modelo, se establece dentro de un vecindario y asi podemos elegir el numero de vecinos que tiene como un parámetro. Luego, el nuevo cliente tendra el “comportamiento” de la mayoría de sus vecinos mas cercanos. Por eso el número de vecinos siempre debe ser impar. </p>
+
+                        <p>Definimos los parámetros para hacer una grilla con cross validation y encontrar los parámetros del modelo  de  k-vecinos  más  cercanos  que  más  se  ajuste  a  nuestros  datos  y  entregue mejores resultados. Los parámetros a analizar son los siguientes:</p>
+                               
+                        <p><b>n_neighbors:</b>Número de vecinos</p>
+                        <p><b>weights:</b>Función  de  pesos  utilizada  en  la  predicción.  Puede  ser  la  función  uniforme (Todos los puntos de cada vecino se ponderan por igual) y la función de distancia (punto de pesos por la inversa de su distancia, los vecinos más cercanos tendrán más influencia que los que están más  lejos).</p>                            
+                        <p><b>metric: </b>métrica de distancia.</p>
+                        
+                        <p>Tomando en cuenta que considera todos los atributos, puede que dominen los atributos irrelevantes, por eso conviene filtrarlos y ponderar distancias.  Entrenamos los modelos con nuestros x e y de entrenamiento.  El  número de vecinos debe ser impar para evitar empates.  Después de correr el modelo obtengo los mejores parámetros según la grilla</p>
+
+                        <p><b>n_neighbors:</b>19</p>
+                        <p><b>weights:</b>distance</p>                            
+                        <p><b>metric: </b>manhattan</p>
+
+                        <p>Luego con estos datos graficamos los puntajes obtenidos en base a los parámetros analizados:</p>
+                             
+                            <center><img src="images/vecinos.png" alt="Categoricas" class="center"></center>
+
+                        <p>Según los parámetros, el mejor número de vecinos es 19. Para ese valor, la función peso uniforme es mejor tanto para la distancia euclidiana como para la manhattan, donde  después de correr el entrenamiento, el que me dice que mejor funciona es manhattan. </p>
+                                  
+                    <h3>2.5 Random Forest (Bosques aleatorios)</h3>
+
+                        <p>Es un método más complejo pero estable. Es de lo que mejores funciona, pero es más lento, por ende, más caro. Sin embargo, es una técnica más robusta, pues acá se arman muchos árboles, evitando el sobreajuste.  A cada árbol le paso una cantidad diferente de filas y columnas al azar,  armandose los diferentes árboles.  Luego estos árboles llegan a un consenso o votación entre cuales son las clases que debieran elegirse.</p> 
+                        
+                        <p>Al igual que el modelo anterior,  definimos  el modelo de clasificación, que en este caso es random  forest. Los parámetros a analizar para este modelo son los siguientes:</p> 
+
+                        <p><b>n_estimators: </b>Cantidad de árboles a realizar. Para este caso lo dejamos fijo como 100.</p>
+                        <p><b>max_features:</b>Cantidad de variables que se deben considerar al buscar la mejor división.</p>                            
+                        <p><b>max_depth: </b>Profundidad máxima del árbol.</p>
+                        <p><b>criterion: </b>Función para medir la calidad de la división. Los dos criterios admitidos son la impureza de Gini (gini) y la entropía (entropy).</p>                          
+                           
+                        <p>Luego realizamos la grilla con cross validation para obtener los mejores parámetros y por  último graficamos los puntajes obtenidos en ella. Después de correr el modelo con los parámetros, los resultados son:</p>
+                                 
+                        <p><b>n_estimators: </b>100</p>
+                        <p><b>max_features:</b>auto.</p>                            
+                        <p><b>max_depth: </b>6</p>
+                        <p><b>criterion: </b>Gini</p> 
+                        
+                        <p>Luego con estos datos graficamos los puntajes obtenidos en base a los parámetros analizados . Se observa que según los parámetros, la mejor profundidad del árbol es 6. Para ese valor, se considera una valor automático en la cantidad de variables (curva azul) y donde el mejor de calidad de división es Gini. El gráfico se muestra a continuación:</p>
+
+                        <center><img src="images/bosque.png" alt="" class="center"></center>
+                        <p></p>                 
+                        
+                        <h3>2.6 Red Neuronal</h3>
+                            
+                        <p>La red neuronal es una función continua no lineal donde la dimensión de entrada es igual al número de atributos y la de salida es igual al número de clases.  Es un Método de regresión y clasificación de aprendizaje supervisado. Lo que hace principalmente es tomar funciones lineales a partir de los datos, y las transforman no lineales. Todo esto partir de diferentes “neuronas” que se unen unas con otras. Así, los datos de entrada de una red son los atributos y los de salida son clases, por ejemplo, Fuga y No fuga.</p>  
+                            
+                        <p>Definimos los parámetros a probar en la grilla. Una grilla consiste en probar distintas combinaciones de parámetros en distintas redes neuronales para ver cuál es el que me entrega el mejor resultado. La grilla la armamos con cross validation para obtener los mejores resultados con el menor error de clasificación. En este caso se analizarán los siguientes parámetros:</p>
+                                 
+                        <p><b>batch_size:</b>Tamaño de mini batches para optimizadores estocásticos (batch=muestra)</p>
+                        <p><b>max_iter:</b>Número máximo de iteraciones. Determina el número de epocas.</p> 
+                        <p><b>alpha: </b>parámetro de penalización (Termino de regularización).</p>
+                        <p><b>hidden_layer_sizes </b>Número de neuronas en la capa oculta. </p>                     
+                                
+                        <p>Así, después de probar todas las combinaciones posibles, cada configuración resultante es una red neuronal distinta, que el modelo prueba, calcula su error y se quedara con la red que tenga el grupo de parámetros con menor error. La red neuronal resultante es la que muestra la figura a continuación:</p>       
+                            
+                        <center><img src="images/redneuronal.png" alt="" class="center"></center>
+
+                        <p>Los mejores parámetros para la red neuronal fueron los siguientes: </p>        
+                        
+                        <p><b>batch_size:</b>10</p>
+                        <p><b>max_iter:</b>100</p> 
+                        <p><b>alpha: </b>0.001</p>
+                        <p><b>hidden_layer_sizes </b>5</p>
+                            
+                        <p>El grosor de cada línea son los pesos asociados, el color de la línea es la roporcionalidad.  Observar que hay pesos positivos y otros negativos. Se observa que, en primera instancia, las neuronas de la capa intermedia se ven mayormente afectadas por neuronas 2 a las 6, y  gran parte del peso del resultado se está dando, al parecer desde las neuronas 4 y 5.</p>
+
+                        <p>Con backpropagation hacemos que este modelo aprenda de los datos, sea machine learning. Busca de forma heurística, no busca el óptimo real sino que va iterando buscando la minimización del error de la red, comparando las diferencias entre los resultados  obtenidos y los esperados. Ese error lo retroalimento, tomando el peso específico que tuvo más influencia en el error, y castigándolo enmayor proporción para reducir el error. Esto se hace propagándolo hacia atrás, recalculando  los pesos  de  la  red  para  calcular  la  nueva  salida,  que  tendrá  otro  error  que  de  nuevo  hará backpropagation hasta encontrar el mínimo error.</p>
+
+                        <p>Dependiendo de como vayamos haciendo las fases de entrenamiento, o de la cantidad de iteraciones que vayamos haciendo, estos valores podrían  ir variando un poco, no siempre serán los mismos resultados,  a  veces  muestra  distinto  número  en  la  capa  oculta  y  distintos  pesos.  Así  corriendo  nuevamente el modelo, nos da otra configuración de red neuronal. </p>
+                             
+                        <center><img src="images/redneuronal2.png" alt="" class="center"></center> 
+                        
+                        <p>Estas variaciones de los valores no solo ocurre en la red neuronal, sino que en todos los modelos entrenados. De esta manera, los mejores parametros asociados a esta última red neuronal son:</p>
+
+                        <p><b>batch_size:</b>10</p>
+                        <p><b>max_iter:</b>100</p> 
+                        <p><b>alpha: </b>0.001</p>
+                        <p><b>hidden_layer_sizes </b>3</p>
+                            
+                        <h3>2.7 SUPPORT VECTOR MACHINE</h3>
+
+                        <p>Ayuda a encontrar con un modelo no lineal un problema de clasificación. Al aproximar se pueden cometer dos tipos de errores: El empírico, asociado a la base de datos o muestra especifica, y el estructural  asociado  al  todo  el  espacio  de  estudio.  Acá  lo  que  se  busca  es  minimizar  el  riesgo estructural, porque si minimizo el empírico, puede acertar en todos los espacios de muestra pero falla  en  todos  los  demás  puntos.  Los  componentes  principales  son  nuestra  base  de  datos,  un hiperplano separador que separa las clases, y una función de decisión que es la que dice  a cual clase pertenece.</p> 
+                          
+                        <p>Además del hiperplano de divide, también tenemos los  vectores soportantes  que son rectas que pasa  por  el  punto  mas  cercano  al  hiperplano  separador.  De  esta  forma  se  minimiza  el  riesgo estructural. Para eso, se utiliza la función kernel que permite realizar una transformación a partir de un mapeo, encontrando un función lineal para después darle un carácter no lineal a este modelo. El kernel Gaussiano es el mas usado, parecido a una campana de Gauss. </p>
+                             
+                        <p>Definimos los parámetros a probar en la grilla, se analizarán los siguientes:</p>     
+                             
+                        <p><b>C:</b>parámetro de regularización. Es el costo de la función objetivo a minimizar.</p>
+                        <p><b>gamma:</b>Coeficiente del kernel.</p>
+                        
+                        <p>El gráfico se muestra a continuación:</p>
+                                
+                            <center><img src="images/support.png" alt="Categoricas" class="center"></center>
+
+                        <p> Se  definió  la grilla aplicándole tres valores al parámetro C y tres al parámetro gamma, se aplica la grilla y arma todos los modelos asociados a cada combinación de la grilla. Observamos que la curva verde  es  el  que  muestra  los  mejores  parámetros  del  modelo  representando  el  parámetro  de regularización C, pasando por un gamma iguala 0.0001.  Así, los mejores parámetros del modelo son:</p>
+                               
+                        <p><b>C:</b> 100.000</p>
+                        <p><b>gamma:</b> 0.0001</p>
+                          
+                        <h2>3. Evaluación</h2>
+
+                        <p>En esta sección, evaluamos el rendimiento de los modelos previamente entrenados para determinar su capacidad de predicción de la variable objetivo, para esto utilizamos los datos de prueba.</p>
+                              
+                        <p>El  índice AUC es el área bajo la curva ROC  que se verá posteriormente. Mientras más grande la curva AUC, mejor es el modelo. Para lograr graficar, creamos un data frame vacío para guardar los resultados de predicción de cada modelo.</p> 
+                                 
+                        <h3>3.1 Regresión Logística</h3>                                  
+                            
+                        <p>Empezamos la evaluación de este modelo calculando su nivel de precisión o Accuracy, que es de 0.88.  Esto  significa  que  el  88%  de  los  casos  acertó  de  forma  correcta.</p>
+                        
+                        <p>Después de obtener la predicción de los valores de la variable  ‘y’ a partir de los datos de prueba de la variable ‘x’, calculamos la matriz de confusión, mostrada a continuación:</p> 
+                            
+                        <center><img src="images/confusion1.png" alt="" class="center"></center>         
+                            
+
+                        <p>Vemos que un lado de la matriz está en 0. Una teoría puede ser,  por ejemplo, porque  probablemente se consideraron todos los que no se fugaron y no pudo predecir los que se fugaron, a pesar de las iteraciones.  Esto  implica  que  los  datos  están  muy  desbalanceados,  por  lo  que  es  necesario balancearlos si quisiéramos obtener buenos resultados en este modelo, intentando ampliar la base  de datos de los que se fugan para entender su comportamiento.</p>
+                                
+                        <p> Obtenemos el reporte de clasificación entre la variable objetivo de prueba y la variable objetivo de predicción:</p>
+                           
+                            <center><img src="images/tabla11.png" alt="" class="center"></center>
+                            
+                        <p>Obtenemos el reporte de clasificación entre la variable objetivo de prueba y la variable objetivo de predicción. Se observa que se logró  una precisión de los clientes que no se fugan de un 88% pero de los que se fugan, 0%, afirmando la teoría anterior.</p>
+                             
+                        <p>Calculando el área bajo la curva de la curva ROC, nos da un Índice AUC de 0.5, lo que representa lamentablemente, un modelo aleatorio para nuestra base de datos preprocesada</p>
+                                 
+                        <p>Debido  a  los  malos  resultados  de  este  modelo,  no  tendría  sentido  realizar  los  cálculos  de beneficios/costos económicos de los aciertos y errores en las predicciones.</p>
+                                  
+                        <h3>3.2 ÁRBOL DE DECISIÓN</h3>
+
+                        <p>De la misma forma que en la regresión logística, para los árboles de decisión armamos la matriz de confusión. Esta  matriz evalúa el desempeño real, a partir de la predicción y la realidad, de nuestro modelo. Pueden ocurrir cuatro casos:</p>
+                             
+                        <p><b>TP:</b> True positive, predigo que no se fuga correctamente. </p>
+                        <p><b>TN:</b> True negative, predigo que se fuga correctamente.</p>
+                        <p><b>FP:</b> False positive, predigo que no se fuga incorrectamente. Llamado también error tipo 1</p>
+                        <p><b>FN:</b> False negative, predigo que se fuga incorrectamente. Llamado también error tipo 2.</p>     
+                                
+                        <p>La matriz de confusión asociada al árbol de decisión se muestra en la figura siguiente: </p>
+                              
+                        <center><img src="images/confusion2.png" alt="" class="center"></center>
+
+                        <p>Se observa una gran cantidad de clientes en donde se predijo correctamente que no se fugaban, seguido por una cantidad bastante menor de clientes donde se predijo correctamente que se fugaban, y en menor medida aquellos donde la predicción de fuga o no fuga fue incorrecta.</p>
+                        
+                        <p>En resumen, el numero de variables asociado a cada predicción es la siguiente:</p>
+
+                        <p><b>TP:</b> True positive. 1419 casos. </p>
+                        <p><b>TN:</b> True negative. 131 casos.</p>
+                        <p><b>FP:</b> False positive. 79 casos.</p>
+                        <p><b>FN:</b> False negative. 53 casos.</p>
+
+                        <p>Calculando  el  índica  AUC,  este  da  un  valor  de  0.794,  lo  que  representa  un  buen  modelo, considerando que debe tener un valor mínimo de 0.7. </p>
+
+                        <p>A partir de la matriz de confusión anterior, podemos establecer los beneficios/costos económicos de los aciertos y errores en las predicciones a partir de la siguiente matriz de pagos: </p> 
+                                
+                        <center><img src="images/pagos.png" alt="" class="center"></center>
+                        
+                        <p>De esta manera, podemos calcular los beneficios y costos de asociados:</p>
+                        <p></p>
+                            
+                        <center><img src="images/beneficios.png" alt="" class="center"></center>
+
+                        <p><b>Beneficio:</b> 1419*0 + 131*5000 - 100*79 - 1000*53 = 594.100</p>
+                           
+                                 
+                        <h3>3.3 K-VECINOS MAS CERCANOS</h3> 
+
+                        <p>Para la evaluación, calculamos el accuracy, el valor de la variable objetivo, el reporte de clasificación, la matriz de confusión y el cálculo del índice AUC en la evaluación de este modelo.</p> 
+                         
+                        <p>En la siguiente imagen, se muestra la matriz de confusión del primer modelo de K-Vecinos: </p>
+
+                        <center><img src="images/confusion3.png" alt="" class="center"></center>
+                             
+                        <p><b>TP:</b> True positive. 1389 casos. </p>
+                        <p><b>TN:</b> True negative. 100 casos.</p>
+                        <p><b>FP:</b> False positive. 110 casos.</p>
+                        <p><b>FN:</b> False negative. 83 casos.</p>
+                            
+                            <center><img src="images/tabla12.png" alt="" class="center"></center>
+                                
+                        <p>La precisión del modelo (Accuracy) es 0.89. Calculando el índica AUC, este da un valor de 0.793, muy parecido al árbol de decisión, lo que representa un buen modelo</p>                                
+                            
+                        <p>Desde la matriz de confusión anterior, podemos establecer los beneficios/costos económicos de los aciertos y errores en las predicciones a partir de la siguiente matriz de pagos:</p> 
+                            
+                        <center><img src="images/confusion4.png" alt="" class="center"></center>
+                           
+                        <p>De esta manera, podemos calcular los beneficios y costos de asociados:</p> 
+
+                        <center><img src="images/beneficios2.png" alt="" class="center"></center>
+
+                        <p><b>Beneficio:</b> 1389*0 + 100*5000 - 100*110 - 1000*83 = 406.000</p>
+                        
+                        <h3>3.4 Random Forest</h3>
+                        
+                        <p>Para la evaluación, calculamos el accuracy, el valor de la variable objetivo, el reporte de clasificación, la matriz de confusión y el cálculo del índice AUC en la evaluación de este modelo.</p> 
+                                                  
+                        <p>En la siguiente imagen, se muestra la matriz de confusión del primer modelo de Random Forest:</p>
+                            
+                        <center><img src="images/confusion5.png" alt="" class="center"></center>
+
+                        <p>La matriz muestra una gran cantidad de clientes en donde se predijo  correctamente que no se fugaban, seguido por una cantidad bastante menor de clientes donde se predijo correctamente que se fugaban, y en menor medida aún, aquellos donde la predicción fue incorrecta de no fuga y fuga. En resumen, el número de variables asociado a cada predicción es la siguiente:</p>
+                            
+                        <p><b>TP:</b> True positive. 1424 casos. </p>
+                        <p><b>TN:</b> True negative. 130 casos.</p>
+                        <p><b>FP:</b> False positive. 80 casos.</p>
+                        <p><b>FN:</b> False negative. 48 casos.</p> 
+                        
+                        <center><img src="images/tabla13.png" alt="" class="center"></center>
+
+                        <p>La precisión del modelo (Accuracy) es 0.92. Calculando el índica AUC, este da un valor de 0.794, lo que representa un buen modelo</p>
+
+                        <p>La matriz de pago es:</p>
+
+                        <center><img src="images/pagos2.png" alt="" class="center"></center>
+                            
+                        <p>Podemos calcular los beneficios y costos de asociados:</p>
+                        
+                        <center><img src="images/beneficios3.png" alt="" class="center"></center>
+
+                        <p><b>Beneficio:</b> 1424*0 + 130*5000 - 100*80 - 1000*48 = 594.200</p>
+                         
+                        <h3>3.5 Red Neuronal</h3>
+
+                        <p>De la misma forma  que los otros métodos, la red neuronal  calculamos el accuracy, el valor de la variable objetivo, el reporte de clasificacion, la matriz de confusión y el calculo del índice AUC en la evaluación de este modelo. </p>
+                             
+                        <p>En la siguiente imagen, se muestra la matriz de confusión del primer modelo de red neuronal:</p>   
+
+                        <center><img src="images/confusion6.png" alt="" class="center"></center>
+                            
+                        <p>La  matriz  muestra  una  gran  cantidad  de  clientes  en  donde  se  predijo  correctamente  que  no  se fugaban, seguido por una cantidad bastante menor de clientes donde se predijo incorrectamente que no se fugaban, y en menor medida aquellos donde la predicción de fuga tuvo valores  correctos e incorrectos. En resumen, el número de variables asociado a cada predicción es la siguiente:</p>
+
+                        <p><b>TP:</b> True positive. 1439 casos. </p>
+                        <p><b>TN:</b> True negative. 82 casos.</p>
+                        <p><b>FP:</b> False positive. 128 casos.</p>
+                        <p><b>FN:</b> False negative. 33 casos.</p> 
+
+                        <center><img src="images/tabla14.png" alt="" class="center"></center>
+
+                        <p>La precisión del modelo (Accuracy) es 0.9. Calculando el índica AUC, este da un valor de 0.684, lo que no representa un modelo ideal, considerando que debe tener un valor mínimo de 0.7.</p>
+
+                        <p>A partir de la matriz de confusión anterior, podemos establecer los beneficios/costos económicos de los aciertos y errores en las predicciones a partir de la siguiente matriz de pagos: </p> 
+                            
+                        <center><img src="images/beneficios4.png" alt="" class="center"></center>
+                        
+                        <p>Podemos calcular los beneficios y costos</p>
+
+                        <center><img src="images/Beneficios5.png" alt="" class="center"></center>
+
+                        <p><b>Beneficio:</b> 1439*0 + 82*5000 - 100*128 - 1000*33 = 364.200</p>
+                           
+                    <h3>3.6 Support Vector machine</h3>
+
+                        <p>Para  la  evaluación,  de  forma  similar  a  los  otros  modelos,  calculamos  el  accuracy,  el  valor  de  la variable objetivo, el reporte de clasificación, la matriz de confusión y el cálculo del índice AUC en la evaluación de este modelo.</p>
+                             
+                        <p>En la siguiente imagen, se muestra la matriz de confusión del primer modelo de K-Vecinos:</p>
+
+                        <center><img src="images/confusion7.png" alt="" class="center"></center>     
+  
+                        <p>Al igual que la regresión logística, el modelo de support vector machines también muestra una matriz de confusión con valor 0 en la primera columna, mostrando solo los resultados de la predicción de la variable FUGA_NF (no fuga). Así, observamos que este modelo también se vió afect ado por el desbalanceo.</p>                           
+                             
+                        <center><img src="images/tabla15.png" alt="" class="center"></center>    
+                            
+                        <p>Al igual que el modelo de regresión, se observa que el valor del índice AUC es 0.5, lo que support vector machines también se manifiesta como un modelo aleatorio.</p> 
+                            
+                        <p>Al igual que el modelo de regresión, debido a los malos resultados de este modelo, no tendría sentido realizar los cálculos de beneficios/costos económicos de los aciertos y errores en las predicciones.</p>
+
+                         <p></p>   
+
+                    <h2>4. Curvas ROC</h2>
+                        <p>Grafica la razón de éxitos versus la razón de falsas alarmas.  Mientras más cerca se encuentre la curva de la línea punteada, más aleatorio es y por ende será un peor modelo.</p>
+
+                        <p>El Área  Bajo la Curva  (AUC) representa  una medida  robusta  para la medición  de los modelos  de clasificación.  Esta  medida  es  creciente  y  va  desde  0,5  (modelo  aleatorio)  a  1  (discriminación perfecta). Así, la curva ROC mostrara un modelo de buen desempeño como  una curvatura más pronunciada. Un modelo que no discrimina formará una recta.</p> 
+                            
+                        <p>El gráfico de la curva ROC asociados a los modelos que ejecutamos se muestra a continuación:</p></p>    
+                           
+                        <center><img src="images/ROC.png" alt="" class="center"></center>
+
+                        <p>De acuerdo con la información en la figura, el mejor modelo para este análisis es el de árbol de decisión, con un AUC de 0.794, seguido por Random Forest con AUC = 0.793. Ambos tienen  valores  muy  similares.  Le  sigue  K-vecinos  mas  cercanos,  con  un  valor  de  0.710  lo  que  aún  se considera bueno.</p>
+                        
+                        <p>El modelo de Red Neuronal no resulto ser un modelo adecuado para este análisis con un índice de 0.684, ya que no alcanzo el valor mínimo de 0.7</p>
+
+                        <p>Finalmente,  los  modelos  de  Support  Vector  Machines  y  Regresión  logística  se  mostraron lamentablemente aleatorios, con un valor de AUC = 0.5 lo que conlleva a considerar la posibilidad de balancear la base de datos, preprocesarlas nuevamente y revisar  cómo se comportan.</p>
+
+                        <p>A partir de la matriz de pago evaluada  desde la matriz de confusión, se muestra la información del AUC y beneficio de cada modelo:</p>
+
+                        <center><img src="images/tabla16.png" alt="" class="center"></center>
+
+                        <p>La tabla muestra que tanto los  métodos de árbol  de decisión y random forest  generan el mayor beneficio, lo que es consecuente con el índice AUC que obtuvieron.  Sin  embargo,  Random forest genera  un  beneficio  un  poquito  mayor,  y  es  un  método  mas  robusto,  pues  a  pesar  de  las irregularidades  que  pueda  presentar  un  modelo,  va  a  predecir  bien.  Luego,  a  partir  del  análisis realizado, se propone usar <b>random forest</b> para las predicciones.</p>                            
+                      
+        <div id="main">        
+            <footer>
+                <div class="pagination">
+                    <!--<a href="#" class="previous">Prev</a>-->
+                    <a href="fuga.html" class="page">1</a>
+                    <a class="page active">2</a>
+                    <a href="prediccion.html" class="page">3</a>
+                    <a href="#" class="next">SIG</a>
+                </div>
+            </footer>
+        </div>
+                          
+                            
+             
+                                               
+                            
+                            
+                            
+                        
+
+                       
+
+                        
+                        
+                        
+ 
+                            
+                            
+                            
