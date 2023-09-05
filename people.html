@@ -1,0 +1,316 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Renuncia de trabajadores</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Main -->
+        <div id="main">
+
+            <!-- Post -->
+                <section class="post">
+                    <header class="major">
+                        <h1>Renuncia de trabajadores</h1>
+                    </header>
+
+                    <!-- Text stuff -->
+                        <h2>1. Preprocesamiento de datos</h2>
+                            <p>Tiene como objetivo obtener datos calibrados y de calidad con el fin de ayudar a establecer modelos predictivos para tomar decisiones calificadas. <a href="https://github.com/magumc/magumc.github.io/blob/main/Preprocesamiento_Fuga.ipynb"> (Código del proyecto)</a>
+                            </p>
+
+                        <h3>1.1 Análisis exploratorio</h3>
+                        <p>Una completa descripción de las variables recolectadas por cada cliente se presenta a continuación:
+                            <li>1. <b>FUGA:</b> Variable objetivo. F=cliente fugado, NF= cliente activo </li>
+                            <li>2. <b>CreditMes T:</b> crédito en mes T</li>
+                            <li>3. <b>CreditMes T-1:</b> crédito en mes T − 1</li>
+                            <li>4. <b>CreditMes T-2:</b> crédito en mes T − 2</li>
+                            <li>5. <b>NumTarjCred T:</b> Numero de tarjetas de crédito en mes T</li>
+                            <li>6. <b>NumTarjCred T-1:</b> Numero de tarjetas de crédito en mes T − 1</li>
+                            <li>7. <b>NumTarjCred T-2:</b> Numero de tarjetas de crédito en mes T − 2</li>
+                            <li>8. <b>Ingreso:</b> Ingreso cliente</li>
+                            <li>9. <b>Edad:</b> Edad cliente</li>
+                            <li>10. <b>NumTransWeb T:</b> Numero de transacciones en web en mes T</li>
+                            <li>11. <b>NumTransWeb T-1:</b> Número de transacciones en web en mes T-1</li>
+                            <li>12. <b>NumTransWeb T-2:</b> Número de transacciones en web en mes T-2</li>
+                            <li>13. <b>MargenComp T:</b> Margen del cliente para la compañía en mes T</li>
+                            <li>14. <b>MargenComp T-1:</b> Margen del cliente para la compañía en mes T-1</li>
+                            <li>15. <b>MargenComp T-2:</b> Margen del cliente para la compañía en mes T-2</li>
+                            <li>16. <b>MargenComp T-3:</b> Margen del cliente para la compañía en mes T-3</li>
+                            <li>17. <b>MargenComp T-4:</b> Margen del cliente para la compañía en mes T-4</li>
+                            <li>18. <b>MargenComp T-5:</b> Margen del cliente para la compañía en mes T-5</li>
+                            <li>19. <b>MargenComp T-6:</b> Margen del cliente para la compañía en mes T-6</li>
+                            <li>20. <b>Teléfono:</b> La compañía posee el número de teléfono del cliente</li>
+                            <li>21. <b>NivelEduc:</b> Nivel Educacional del cliente</li>
+                            <li>22. <b>Género:</b> Género del cliente</li>
+                            <li>23. <b>EstCivil:</b> Estado civil del cliente</li>
+                            <li>24. <b>Región:</b> Región donde vive el cliente</li>
+                        </p>
+                    <p>Revisamos las características generales de las variables: cuantas son, cuantos datos existen por variable, cuantos de éstos son nulos y que tipo de variable son. </p>
+
+                    <a class="image main"><img src="images/infovar.png" alt="" /></a>
+
+                    <p>Tenemos 24 variables, seis  de  ellas categóricas (Dtype=Object) y el resto numéricas, ya sea con o sin coma flotante (float64, int64) </p>
+
+                    <p>Algunos índices estadísticos básicos para cada variable a calcular pueden ser: la media, percentiles, valores máximos y mínimos  y  desviación.  Si la variable es categórica, cuantas 
+                    categorías existen por variable, cual es la que más se repite (moda) y cuantas veces se repite.  Las siguiente son las variables categóricas: Telefono, NivelEduc, Genero, EstCivil, Región.
+
+                    <p><b>Count:</b> En total se debería mostrar información de 5605 clientes.</p>                    
+                    <p><b>‘Teléfono’:</b> La compañía posee el número de teléfono de todos los clientes, por eso muestra solo una variable categórica("SI") que es la que siempre se repite (moda)</p>
+                    <p><b>‘NivelEduc’:</b> Existen  cuatro  categorías de nivel educacional y la que  más  se repite (moda) es la Universitaria, 3627 veces. La variable presenta 3 datos perdidos.</p>
+                    <p><b>‘Genero’:</b> Hay  tres  categorías de género. La que más se repite es el masculino 3895 veces. Se investigará posteriormente de qué trata la tercera categoría.</p>
+                    <p><b>‘EstCivil’:</b> Cuatro  categorías. La moda es casado, 2960 veces. La variable presenta 2 datos perdidos.</p>
+                    <p><b>‘Region':</b>Muestra una sola categoría, Región Metropolitana</p>
+                    <p><b>‘FUGA’:</b> Variable objetivo. Categórica, posee 2 categorías (cliente fugado: F, o activo: NF) siendo la que más se repite el activo 4889 veces</p>
+
+                    <a class="image fit"><img src="images/Categoricas.png" alt=""/></a>
+
+                    <p>Los indicadores ‘NaN’ indican que no existen, ya que para variables categóricas no tiene sentido calcular el promedio, el mínimo o el máximo, etc. Por ejemplo, es incoherente decir que existe un promedio entre un soltero y un casado, o que el valor máximo del género de una persona es el femenino o masculino.</p>
+
+                    <p>Para la variables numéricas podemos establecer criterios como el promedio, la  desviación, percentil, etc. Haremos el mismo ejercicio anterior, pero con una sola variable: <b>CreditMes_T</b> para explicar su interpretación:</p>
+
+                    <p>  <li>Promedio, 1.021.485 </li>
+                        <li>std: Desviación Estándar, 115.216</li>
+                        <li>min: Valor mínimo que incurre la variable: 912.650</li>
+                        <li>25%: Percentil 25. Bajo este valor se encuentran el 25% de las observaciones, 990.500</li>
+                        <li>50%: Percentil 50: Lo mismo, pero con el 50%. Representa la mediana, 997.000</li>
+                        <li>75%: Percentil 75: Lo mismo, pero con el 75%, 1.014.800</li> 
+                        <li>Max: Valor máximo que incurre la variable, 5.000.000</li>
+                        La misma interpretación se realiza para las otras variables numéricas</p>
+
+                        <a class="image main"><img src="images/Numerica.png" alt="" /></a>
+
+                        <p>Este  análisis  además  es  útil  para  observar  valores  poco  realistas, como en las variables ‘Ingreso’ y ‘Edad’ donde existen valores inconsistentes. Por ejemplo, el valor mínimo del ingreso es negativo y el máximo en la edad es 131 años (posible pero improbable). Para comprobar esta información y otras de interés utilizaremos el análisis gráfico. </p>
+                    
+                    <h3>Análisis gráfico</h3>
+
+                        <p>El  Análisis  gráfico  nos  permite  estudiar  el  comportamiento  general  de  los  datos,  encontrar inconsistencias, relaciones entre variables, su distribución de frecuencias, entre otra información de 
+                        interés. </p>
+                        <p>La  variable  ‘Edad’  se  representa  en  dos  tipos  de  gráficos  que  muestra  información  valiosa. </p>
+
+                        <a class="image main"><img src="images/HistoEdad.png" alt="" /></a>
+                        <a class="image main"><img src="images/PtosEdad.png" alt="" /></a>
+
+                        <p>Desde el histograma estándar se ve que la mayor cantidad de clientes se concentran aproximadamente en los 26 y 40 años, y del histograma de puntos se aprecia dos edades fuera de rango, 127 y 131 años</p>
+
+                        <p>Para la variable ‘Ingresos’, deseamos observar  variable negativa mostrada anteriormente. Para eso, incurrimos al histograma de puntos y ver si existen otros valores inconsistentes.</p>
+
+                        <a class="image main"><img src="images/HistoIngr.png" alt="" /></a>
+
+                        <p>Existe un solo valor negativo.  Además,  se observa que existen otros en el valor 0 o cercano, y algunos con ingresos muy altos. Nuestro criterio en este caso será mantenerlos porque son datos realistas y que pueden servir para nuestro análisis.</p>
+                        
+                        <p>Para las variables categóricas, utilizaremos histogramas representados en barras, para observar su relación entre ellas y con la variable objetivo, y asi obtener información valiosa para estimar la proporción de fuga. Se muestra para la variable ‘NivelEduc’</p>
+
+                        <a class="image main"><img src="images/EducBarra.png" alt="" /></a>
+                        
+                        <p>Los gráficos nos muestran información valiosa. En el izquierdo vemos que la mayoría de los clientes tienen educación técnica o universitaria, mientras que muy pocos  están aún  en la universidad o en enseñanza  media.  Además,  en  el  gráfico  de  proporciones  a  la  derecha,  la  mayoría  posee  un porcentaje de fuga  más  o menos similar (un poco mayor a 10%), a excepción de los estudiantes universitarios  que  tienen  un  porcentaje  menor,  aunque  éstos  son  muy  pocos  en  relación  con  la cantidad  total  de  clientes.  Esta  información  nos  sirve  para,  seguramente,  establecer  criterios de  agrupación.</p>
+
+                        <p>Para  el  atributo  ‘EstCivil’  realizaremos  el  mismo  ejercicio  anterior.  La  figura muestra  los histogramas asociados a esta variable:</p>
+
+                        <a class="image main"><img src="images/EstCivil.png" alt="" /></a>
+
+                        <p>La mayoría de los clientes son casados  y le siguen  solteros, mientras que una baja  porción  son divorciados y una ínfima parte son viudos.  Al igual que con el nivel de educación, casi  todas las variables tienen un nivel de fuga un poco mayor al 10%. En esta variable también se estudiará el uso de agrupación pues,  por ejemplo, los que están viudos, a pesar de que presentan menos fuga que el resto, son tan pocos clientes que es muy probable que no afecte  en el comportamiento de la variable objetivo. </p>
+
+                        <p>La siguiente figura muestra la información de la variable género:</p>
+
+                        <a class="image main"><img src="images/genero.png" alt="" /></a>
+
+                        <p>La  gráfica  nos  sirve  para  identificar  la  tercera  categoría  existente:  <b>‘H’</b>.  Según información recibida de las personas que nos entregaron la información, esa categoría es la misma que ‘M’. Mas adelante se ralizará la agrupacion. Se observa que la mayoría de los clientes son hombres, pero la proporción de fuga entre ambos es similar, entre 10 y 15%.</p> 
+                         
+                        <p>Otro tipo de gráfico de interés son los box-plot, mostrados a continuación:</p>
+
+                        <a class="image main"><img src="images/box.png" alt="" /></a>
+
+                        <p>Los que se fugan y no se fugan tienen prácticamente el mismo rango de edad, concentrado entre los 30  y  40  años,  y  los  mismos  ingresos,  entre  1.5  y  1.7  millones  aproximadamente.  La  media, representada por la línea negra dentro de los “Box”, nos indican que tanto los que se fugan como los que no, tiene una edad promedio de 35 años aproximadamente con ingresos medios alrededor de los 1.6 millones.</p>
+                        
+                        <p>Se aprecia que los box-plot muestran variables categóricas en el eje x y numérica en el eje y. Este  ejercicio se realizó también para las variables de CreditMes y MargenComp, pero muestra datos muy concentrados como para apreciar claramente lo que ocurre.</p>                       
+                            
+                    <h2>1.2 Limpieza de datos</h2>
+                        <p>Esta etapa del procesamiento nos permitirá reconocer los datos irregulares que no nos servirán en el  análisis, y según sea el caso,  establecer criterios  de  eliminación o sustitución por algún valor equivalente.</p>
+                                
+                        <h3>Inconsistencias</h3>
+
+                            <p>Las inconsistencias son datos incoherentes o poco realistas que aparecen comúnmente en las bases de  datos.  Declaramos  los  valores  que  están  fuera  de  rango  como  valores  perdidos,  para  poder identificarlos. Se anulan los datos negativos de la variable ingreso y los mayores a 100  años  en la edad. Así, se aprecia que se agrega un valor nulo en la variable ingreso y dos en la edad, nulos que no existían antes.</p>
+
+                            <a class="image main"><img src="images/tabla2.png" alt="" /></a>
+
+                            <p>La información anterior se representa en los histogramas de puntos siguientes:</p>
+
+                            <a class="image main"><img src="images/HistIngEdad.png" alt="" /></a>
+
+                            <p>Los valores negativos de los ingresos y lo que estaban sobre 100 de la 
+                                edad  ya  no  están  presentes.  Pero  esos  datos  no  están  presentes  porque  se  perdieron. Luego, estudiaremos que criterio estableceremos para recuperarlos.</p>  
+                                
+                        <h3>Imputación valores perdidos</h3>        
+                            <p>La imputación consiste en reemplazar los datos perdidos por alguno que no cambie  sustancialmente el comportamiento de los datos. Como los valores perdidos son menores al 5%, podemos reemplazar los  valores  perdidos  por  la  media  las variables  numéricas,  y  por  la  moda  en  las categóricas. La tabla siguiente muestra lo realizado:</p>
+
+                            <a class="image main"><img src="images/tabla3.png" alt="" /></a>
+
+                            <p>Observamos que con la imputación múltiple logramos eliminar los nulos y  se verifica que ya no falta ningún dato.</p>
+                            <p>Existen otras dos opciones, como la eliminación de casos y la imputación simple (simulación). La primera no se eligió porque lo que hace es, donde existe un valor nulo, elimina la fila completa y se corre el riesgo de perder datos importantes. La segunda tampoco se eligió, porque la cantidad de datos perdidos no fueron tantos como para realizar una simulación.</p>                                 
+                                       
+                    <h2>1.3 Transformación de datos</h2>
+                        <p>La  transformación de los datos nos permite agrupar datos,  construir atributos,  reducir sus clases, escalarlos  con  funciones  matemáticas,  mapearlos,  con  la  finalidad  de  mejorar  la  capacidad  de discriminación de una variable, dar algún significado matemático  a  ellas como también igualar sus pesos relativos </p>                      
+                        
+                        <h3>Transformar al promedio</h3>
+                            
+                            <p>La primera transformación a realizar consiste en promediar  algunas variables que tienen información de diferentes períodos,  como  los últimos meses de crédito,  transacciones,  número  de tarjetas de crédito  y  el  margen.  Así  se  crearán  nuevas  variables  con  el  valor  promedio  de  los  atributos  mencionados. Las variables promedio a crear serán las siguientes:</p> 
+                             
+                            <p><b>'AvrCredit'</b>= Prom('CreditMes_T', 'CreditMes_T-1','CreditMes_T-2’)</p>
+                            <p><b>'AvrTarj'</b> = Prom('NumTarjCred_T','NumTarjCred_T-1',  'NumTarjCred_T-2']</p>
+                            <p><b>'AvrTrans</b>= Prom('NumTransWeb_T','NumTransWeb_T-1','NumTransWeb_T-2</p>
+                            <p><b>‘AvrMarg’</b>=Prom(‘MargenComp_T’,’MargenComp_T-1’,’MargenComp_T-2’,’MargenComp_T-3’, ‘MargenComp_T-4’, MargenComp_T-5’, MargenComp_T-6’)</p>
+                                
+                            <p>De estas forma, las variables “Avr” son las que mantienen  en el modelo  mientras que los atributos que se usaron para crear estas nuevas variables se eliminan.</p>
+
+                            <a class="image main"><img src="images/tabla4.png" alt="" /></a>
+
+                            <p> </p>
+
+                        <h3>Transformación a una nueva escala</h3>
+
+                            <p>Esta transformación nos permite reducir la cantidad de variables de 24 a 12. Además, en algunas de las variables transformadas, cambió de tipo: de discreta a continua </p>                         
+                        
+                            <p>Este ejercicio lo realizamos con las variables‘AvrCredit’, ‘AvrMarg’ e ‘Ingreso’, transformándolos usando la función logaritmo para reducir la concentración en los datos. A la izquierda se muestra el histograma antes de la transformación y a la derecha después de ella.</p>                                            
+                                
+                            <a class="image main"><img src="images/ln.png" alt="" /></a>
+
+                            <p> La transformación no logró descentralizar los datos,porque la gran mayoría de éstos ya se encontraban muy concentrados. Para lo que sí  nos sirvió fue para  modificar la escala y disminuir el rango de  valores, como vemos en el ingreso, donde el rango disminuyo entre aproximadamente 500 mil y 10 millones, a un rango entre 13 y 16.</p>
+                            <p>No transformamos la escala en las variables ‘AvrTarj’ y ‘AvrTrans’, pues estas son consideradas en este estudio como variables “contadoras” y no poseen la misma naturaleza que las financieras. Por eso, solo se les mantuvo el promedio.</p>
+                            
+                            <p>Los beneficios descritos anteriormente gracias a la transformación realizada permiten mantener los atributos transformados y eliminar aquellos que nos permitieron realizar la transformación: </p>
+
+                            <a class="image main"><img src="images/tabla6.png" alt="" /></a>
+
+                            <p></p>
+                            
+                        <h3>Agregación</h3>
+                            <p>La agregación  nos permite aplicar operadores a una o  más  variables, reducir los atributos de las muestras y en general, crear conocimiento al momento de crear este tipo relaciones que no siempre son triviales.</p> 
+                               
+                            <p>A partir del análisis exploratorio de datos, observamos que existen algunos atributos que presentan muy pocos datos, como los que aún no tienen la educación profesional completa y los clientes con estado civil viudo. Además, en la variable ‘Genero’ existía una cantidad ínfima de datos que poseen categoría H. Así, realizaremos la agregación para estas variables</p>                            
+                            
+                            <p>Para la variable educación  agruparemos sus datos para reducir sus clases. Por lo tanto, uniremos dos clases en una. Los nuevos atributos se llamarán ‘Completa’ a los que tienen educación técnica y universitaria, e ‘Incompleta’ a los que tienen educación media y universitaria incompleta</p>                                 
+                                
+                            <p><b>TEC + UNI = Completa</b></p>
+                            <p><b>EST_UNI + MED = Incompleta</b></p>
+
+                            <p>Para el estado civil hacemos algo similar. A los que  son  viudos los juntamos con los divorciados para formar la categoría “OTRO”</p>
+                                 
+                            <p><b>VIU + DIV = OTRO</b></p>
+
+                            <p>En la variable Genero por error algunas variables 'M' fueron escritas como 'H', luego reemplazamos la variable 'H' por la 'M'. En la tabla podemos ver el resultado de la reducción de las variables:</p>
+
+                            <a class="image main"><img src="images/tabla7.png" alt="" /></a>
+
+                            <p> Graficando  las  variables  categóricas  a  las  que  se  les  realizó  la  transformación  usando  el histograma  de  barras para revisar si hubo un cambio drastico en relacion a la variable objetivo FUGA</p>
+ 
+                            <a class="image main"><img src="images/Histo2.png" alt="" /></a>
+                            <a class="image main"><img src="images/histo3.png" alt="" /></a>
+                            <a class="image main"><img src="images/histo4.png" alt="" /></a>
+
+                            <p>vemos que no existen grandes diferencias en el comportamiento y proporción de las variables con respecto a la objetivo ‘FUGA’, comparado con el análisis exploratorio.A pesar de que la educación incompleta presenta una cantidad muy reducida de datos, la dejaremos para mejor análisis del modelo.</p> 
+                              
+                        <h3>Transformar a variable binaria</h3>
+                            <p>Aquí se utilizan  variables  “Dummy”  en  las  categóricas, con el fin de aumentar las variables numéricas y así facilitar las tareas de los        algoritmos en la construcción del modelo. Queremos transformar categóricas específicas a variable binaria, cuando 0 es FALSE y 1 es TRUE, para simplificar  el análisis matemático de los datos.  </p> 
+                                
+                            <p>La idea es, si tenemos una variable con N categorías, crear N-1 variables dummy. Así, si una variable categórica con dos clases en el data set obtiene el valor 0, entonces la que no está presente tendrá valor 1, y si es de tres clases, si dos tienen valor 0 entonces la tercera tendrá valor 1. El resultado es:</p>                       
+                              
+                            <a class="image main"><img src="images/tabla8.png" alt="" /></a>
+
+                            <p>Se observa que todas las variables categóricas cambiaron su naturaleza a variable numérica binaria (uint8).  De esta forma, la  categoría  M de la variable  ‘Genero’  se transformó  en  la  variable binaria ‘Genero_M’. Luego, si esta variable obtiene el valor 0, será  la variable  ‘Genero_F’ la que  tendrá  valor verdadero  y  será  considerada en el modelo, en caso contrario,  será  la  variable  Genero_M. De la misma forma se tratan las otras variables binarias.  A continuación se muestra como el valor  máximo  de las variables antes  categóricas  y  ahora discretas toman valores min=0 y max=1.</p> 
+                            
+                            <a class="image main"><img src="images/tabla9.png" alt="" /></a>
+
+                            <p>Atención especial merece las variables ‘Telefono_Si’ y ‘Region_RM’. Estas variables presentan una  sola  categoría,  por  lo  que  siempre  obtendrán  el  valor  1.  Mas  adelante  se  analizará  la forma de </p>
+                                 
+                        <h3>Discretización</h3>   
+                            <p>Consiste en transformar las variables continuas a categóricas.  Con esto aumentamos las variables para crear mejor discriminación de ellas. De esta manera se logra dividir el rango de un atributo en intervalos.  Estose usa generalmente cuando la variable continua esta muy concentrada o cuando no presenta un comportamiento lineal.</p>
+                            
+                            <p>Hay que establecer un criterio para dividir las variables, en este caso  estableceremos percentiles. Lo  haremos para la variable  ‘Edad’,  ‘LnMargen’,  ‘LnCredit’,  ‘LnIngreso’, pues son las variables  continuas  que  tenemos.  Recordar  que  las  variables  AvrTarj  y  AvrTrans las consideramos “contadoras”, por esa razón no las discretizamos.</p>
+                             
+                            <p>Definimos la forma  estándar para establecer cuantiles, con el 20% de la variable en cada intervalo: [0, .2, .4, .6, .8, 1].  Empezaremos con la variable  edad, que no presenta un comportamiento lineal.</p>
+                            
+                            <a class="image main"><img src="images/discret.png" alt="" /></a>
+                                
+                            <p>la variable se divide  en 5  intervalos:  (14.999, 29.0] < (29.0, 32.0] < (32.0,36.0] <(36.0, 43.0]  <  (43.0,  80.0).  Esta  variable discretizada es nueva, llamada  Edad_binned. Entonces ‘Edad_binned’ será la variable ‘Edad’ discretizada. Los paréntesis en los intervalos representan valores abiertos y los corchetes, cerrados.</p>
+                            
+                            <p>De la misma manera proseguimos con las  variables financieras  LnMargen, LnCredit, LnIngreso</p>
+
+                            <p><b>LnMargen (LnMargen_binned)</b></p>
+                            <p>(12.224, 12.3328] < (12.3328, 12.3332] < (12.3332, 12.334] <  (12.334, 12.3352] < (12.3352, 12.4071]</p>
+                            <p><b>LnCredit (LnCredit _binned)</b></p>
+                            <p>(13.364, 13.482] < (13.482, 13.488] < (13.488, 13.5] < (13.5, 13.523] < (13.523, 15.272]</p>
+                            <p><b>LnIngreso (LnIngreso _binned)</b></p>
+                            <p>(-0.001, 13.674] < (13.674, 13.803] < (13.803, 13.953] < (13.953, 14.212] < (14.212, 16.08]</p> 
+                            <p>Para  las  variables  AvrTrans  y  AvrTar,  se  intento  discretizar  para  observar  que  ocurría,  y el  código  presenta error. La  variable  que  estamos intentado discretizar toma muy pocos valores distintos y por lo tanto no hay datos suficientes para crear 5 intervalos.</p> 
+                                 
+                    <h2>2. Selección de atributos</h2>
+                        
+                    <p>El objetivo de  la selección  de atributos es elegir  un conjunto de atributos relevantes, eliminando los que podrían generar ruido y confunden al modelo.</p> 
+
+                    <p>Utilizaremos el método  de <b>filtro</b>, consistente en  eliminar variables inútiles,  estudiar correlación entre los atributos o redundancia y evaluar cuales son las más relevantes.</p> 
+
+                    <h3>2.1 Inutilidad</h3>                            
+                        <p>Este criterio consiste en encontrar las variables muy concentradas. Para  esto calculamos la desviación estándar de las variables. Los resultados se muestran a continuación:</p>
+                            
+                        <a class="image main"><img src="images/tabla10.png" alt="" /></a>
+
+                        <p>A mayor concentración,  menor desviación.  De los valores anteriores se evidencia que existen dos variables  con  desviación  0:  Region_RM  y  Telefono_Si.  Esto,  debido  a  que  solo  presentan una categoría  cada  una,  por  lo  que  su  concentración  es  absoluta.  Luego,  es  seguro  eliminarlas. Observamos ademas una variable  con una concentración muy baja: LnMargen = 0.003863. A pesar de que es un valor muy bajo, lo dejaremos para ver si más adelante presenta relevancia.</p> 
+                         
+                    <h3>2.2 Redundancia</h3>
+                        <p>Este criterio consiste en encontrar las variables que  están  muy correlacionadas porque entregan resultados similares.  En  los modelos  estadísticos  los atributos deben ser independientes, para que el valor de uno no tenga impacto en el otro. Si existe redundancia entre dos atributos solo se debe borrar uno de ellos. Para evaluar este citerio usamos la matriz de correlación representado como gráfico de color: </p>
+
+                        <a class="image main"><img src="images/redundancia.png" alt="" /></a>
+                            
+                        <p>Para que exista correlación entre dos variables, criterio consiste en que si existe un valor entre 0.9 y 1  existe  redundancia  (color  claro).  Observar  que  todas  las  variables  existentes  no  presentan redundancia entre ellas ya que ninguna entrega un resultado similar a otra</p>
+                       
+                    <h3>2.3 Relevancia</h3>
+                        <p>Este criterio consiste en elegir que variables son más relevantes para predecir la variable objetivo.Se pueden usar principalmente dos métodos: Test chi-cuadrado para variables categóricas y  ANOVA  para  atributos  numéricos. Primero  se  debiera  usar  el  test  chi-cuadrado  para  estudiar correlaciones entre variables nominales y luego para elegir las variables más relevantes.</p>
+                             
+  
+                        <p>Según  los resultados obtenidos en  el gráfico  de calor,  no es necesario realizar el test, ya que se demostró que no existen correlación entre las variables.</p>
+                            
+                        <p>Luego,  seleccionaremos  los  atributos  son  relevantes.  Elegiremos  los  5  primeros  para  tener  una referencia. Esto se realiza con el test KBest junto con el chi-cuadrado.</p>
+
+                        <a class="image main"><img src="images/chicuadrado.png" alt="" /></a>
+                             
+                        <p></p>
+
+                    <h2>3. Normalización</h2>
+                        <p>La normalización pretende aplicar una función matemática a una variable continua para cambiar su rango.  De  esta  forma  iguala  el  tratamiento  de cada  variable.  En  nuestro  caso,  se  realiza  la normalización  min-max. Lo que hace es una  transformación  lineal  usando los  mínimos  y  máximos de los datos originales, creando nuevos mínimos y máximos. Con esto ya podemos exportar la base  de datos preprocesada. Los resultados de la normalización se muestran a continuación:</p>
+                            
+                        <a class="image main"><img src="images/normalizacion.png" alt="" /></a>
+                        
+        <div id="main">        
+            <footer>
+                <div class="pagination">
+                    <!--<a href="#" class="previous">Prev</a>-->
+                    <a class="page active">1</a>
+                    <a href="modelos.html" class="page">2</a>
+                    <a href="#" class="page">3</a>
+                    <a href="#" class="next">SIG</a>
+                </div>
+            </footer>
+        </div>
+                            
+                            
+                            
+                                               
+                            
+                            
+                            
+                        
+
+                       
+
+                        
+                        
+                        
+ 
+                            
+                            
+                            
